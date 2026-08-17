@@ -16,7 +16,13 @@ class Settings(BaseSettings):
     openai_realtime_model: str = "gpt-realtime-2.1"
     browser_call_sample_rate: int = 24000
 
+    cors_origins: str = "http://localhost:5173"
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
 
 
 settings = Settings()

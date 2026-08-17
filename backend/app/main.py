@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.config import settings
 from app.db import Base, engine
 from app.routers import browser_call, businesses, calls, chat, documents, qa_pairs, realtime_key
 
@@ -10,7 +11,7 @@ app = FastAPI(title="AI Call Center Receptionist API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=settings.cors_origin_list,
     allow_methods=["*"],
     allow_headers=["*"],
 )
