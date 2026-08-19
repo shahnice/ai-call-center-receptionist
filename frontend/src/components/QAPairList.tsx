@@ -3,10 +3,12 @@ import { createQAPair, deleteQAPair, QAPairOut } from "../api";
 
 export default function QAPairList({
   businessId,
+  apiKey,
   qaPairs,
   onChanged,
 }: {
   businessId: string;
+  apiKey: string;
   qaPairs: QAPairOut[];
   onChanged: () => void;
 }) {
@@ -20,7 +22,7 @@ export default function QAPairList({
     setSaving(true);
     setError(null);
     try {
-      await createQAPair(businessId, question.trim(), answer.trim());
+      await createQAPair(businessId, question.trim(), answer.trim(), apiKey);
       setQuestion("");
       setAnswer("");
       onChanged();

@@ -3,9 +3,11 @@ import { uploadDocument } from "../api";
 
 export default function UploadPanel({
   businessId,
+  apiKey,
   onUploaded,
 }: {
   businessId: string;
+  apiKey: string;
   onUploaded: () => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -18,7 +20,7 @@ export default function UploadPanel({
     setUploading(true);
     setError(null);
     try {
-      await uploadDocument(businessId, file);
+      await uploadDocument(businessId, file, apiKey);
       onUploaded();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");

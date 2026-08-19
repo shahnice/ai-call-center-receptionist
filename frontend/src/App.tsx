@@ -7,6 +7,7 @@ import DocumentList from "./components/DocumentList";
 import QAPairList from "./components/QAPairList";
 import TestCallPanel from "./components/TestCallPanel";
 import UploadPanel from "./components/UploadPanel";
+import { useApiKey } from "./useApiKey";
 
 type Tab = "knowledge" | "voice" | "settings";
 
@@ -17,6 +18,7 @@ export default function App() {
   const [qaPairs, setQaPairs] = useState<QAPairOut[]>([]);
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("knowledge");
+  const { apiKey, setApiKey } = useApiKey();
 
   async function refreshBusinesses() {
     const list = await listBusinesses();
@@ -58,6 +60,17 @@ export default function App() {
           }}
         />
 
+        <label style={{ display: "block", marginBottom: 16 }}>
+          Your OpenAI API key
+          <input
+            type="password"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            placeholder="sk-..."
+            style={{ width: "100%", padding: 8, borderRadius: 8, border: "1px solid #ccc", marginTop: 4 }}
+          />
+        </label>
+
         {selectedBusiness && (
           <>
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
@@ -86,6 +99,7 @@ export default function App() {
                 <h2>Documents</h2>
                 <UploadPanel
                   businessId={selectedBusiness.id}
+                  apiKey={apiKey}
                   onUploaded={() => refreshKnowledge(selectedBusiness.id)}
                 />
                 <DocumentList documents={documents} selectedId={selectedDocId} onSelect={setSelectedDocId} />
@@ -103,19 +117,20 @@ export default function App() {
         )}
 
         {selectedBusiness && tab === "voice" && (
-          <TestCallPanel key={selectedBusiness.id} business={selectedBusiness} />
+          <TestCallPanel key={selectedBusiness.id} business={selectedBusiness} apiKey={apiKey} />
         )}
 
         {selectedBusiness && tab === "knowledge" && (
           <div style={{ display: "flex", flexDirection: "column", height: "100%", gap: 16, overflowY: "auto" }}>
             <QAPairList
               businessId={selectedBusiness.id}
+              apiKey={apiKey}
               qaPairs={qaPairs}
               onChanged={() => refreshKnowledge(selectedBusiness.id)}
             />
             <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 300 }}>
               <h3>Test chat</h3>
-              <ChatPanel key={selectedBusiness.id} businessId={selectedBusiness.id} />
+              <ChatPanel key={selectedBusiness.id} businessId={selectedBusiness.id} apiKey={apiKey} />
             </div>
           </div>
         )}
